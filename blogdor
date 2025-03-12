@@ -1,0 +1,220 @@
+#!/bin/bash
+
+set -e
+
+# Configuration
+POSTS_DIR="./src/posts"
+PUBLIC_DIR="public"
+TEMPLATE="./src/template.html"
+METADATA="./src/metadata.yaml"
+STYLES="./src/style.css"
+
+# Create directories if they don't exist
+mkdir -p "$POSTS_DIR"
+mkdir -p "$PUBLIC_DIR"
+
+# Function to show help
+show_help() {
+  echo "Blogdor - A simple static blog generator"
+  echo ""
+  echo "Usage:"
+  echo "  ./blogdor                 Build the entire blog"
+  echo "  ./blogdor new [title]     Create a new blog post"
+  echo "  ./blogdor serve           Start a local server"
+  echo "  ./blogdor clean           Remove the build directory"
+  echo "  ./blogdor help            Show this help message"
+  echo ""
+}
+
+# Function to build the blog
+build_blog() {
+  echo "🔨 Building blog..."
+
+  # Copy CSS file to output directory
+  cp $STYLES "$PUBLIC_DIR/"
+
+  # Process all markdown files in the posts directory
+  for markdown_file in "$POSTS_DIR"/*.md; do
+    # Skip if no files found
+    [ -e "$markdown_file" ] || continue
+
+    # Check if the post is a draft
+    if grep -q "^draft: true" "$markdown_file"; then
+      echo "⏩ Skipping draft: $markdown_file"
+      continue
+    fi
+
+    # Extract filename without extension
+    filename=$(basename "$markdown_file" .md)
+
+    # Convert markdown to HTML with our template
+    pandoc "$markdown_file" \
+      --template="$TEMPLATE" \
+      --standalone \
+      --metadata-file="$METADATA" \
+      -o "$PUBLIC_DIR/${filename}.html"
+
+    echo "✅ Converted $markdown_file to $PUBLIC_DIR/${filename}.html"
+  done
+
+  # Generate an index page from a special markdown file
+  if [ -f "index.md" ]; then
+    pandoc "index.md" \
+      --template="$TEMPLATE" \
+      --standalone \
+      --metadata-file="$METADATA" \
+      -o "$PUBLIC_DIR/index.html"
+
+    echo "✅ Generated index page"
+  fi
+
+  echo "🎉 Build completed!"
+}
+
+# Function to create a new post
+create_new_post() {
+  # Get current date and time
+  current_date=$(date +"%Y-%m-%d")
+  current_datetime=$(date +"%Y-%m-%d %H:%M:%S")
+
+  # Get title from argument or use datetime
+  if [ -z "$1" ]; then
+    # No title provided, use current datetime as title
+    post_title="Post on $current_datetime"
+    # Use timestamp for the slug
+    post_slug=$(date +"%Y%m%d-%H%M%S")
+  else
+    # Use provided title
+    post_title="$1"
+    # Generate filename from title
+    post_slug=$(echo "$post_title" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | sed 's/[^a-z0-9-]//g')
+  fi
+
+  # Create full filename
+  filename="$POSTS_DIR/${current_date}-${post_slug}.md"
+
+  # Check if file already exists
+  if [ -f "$filename" ]; then
+    echo "❌ Error: Post already exists: $filename"
+    exit 1
+  fi
+
+  # Create the post with front matter
+  cat >"$filename" <<EOF
+---
+title: "$post_title"
+date: "$current_datetime"
+draft: true
+---
+
+# $post_title
+
+Write your content here...
+
+## Section 1
+
+Your text goes here.
+
+\`\`\`bash
+# Add code examples here
+echo "Hello, World!"
+\`\`\`
+
+## Section 2
+
+More content here...
+
+![Alt text](images/placeholder.jpg)
+
+> A blockquote for good measure
+
+EOF
+
+  echo "✅ Created new post: $filename"
+
+  # Optionally open in default editor
+  if [ -n "$EDITOR" ]; then
+    $EDITOR "$filename"
+  else
+    echo "📝 Edit your post with your favorite editor"
+  fi
+}
+# Function to start a local server
+serve_blog() {
+  echo "🌐 Starting local server at http://localhost:8000"
+  echo "Press Ctrl+C to stop"
+  cd "$PUBLIC_DIR" && python3 -m http.server 8000
+}
+
+# Function to clean build directory
+clean_blog() {
+  echo "🧹 Cleaning build directory..."
+  rm -rf "$PUBLIC_DIR"/*
+  echo "✅ Build directory cleaned"
+}
+
+# Main command logic
+case "$1" in
+"")
+  build_blog
+  ;;
+"build")
+  build_blog
+  ;;
+"new")
+  create_new_post "$2"
+  ;;
+"serve")
+  serve_blog
+  ;;
+"clean")
+  clean_blog
+  ;;
+"help")
+  show_help
+  ;;
+*)
+  echo "❌ Unknown command: $1"
+  show_help
+  exit 1
+  ;;
+esac
+
+exit 0
+
+# #!/usr/bin/env bash
+#
+# # Create output directory if it doesn't exist
+# mkdir -p public
+#
+# # Copy CSS file to output directory
+# cp ./src/style.css public/
+#
+# # Process all markdown files in the posts directory
+# for markdown_file in ./src/posts/*.md; do
+#   # Extract filename without extension
+#   filename=$(basename "$markdown_file" .md)
+#
+#   # Convert markdown to HTML with our template
+#   pandoc "$markdown_file" \
+#     --template=./src/template.html \
+#     --standalone \
+#     --metadata-file=./src/metadata.yaml \
+#     --highlight-style=zenburn \
+#     -o "public/${filename}.html"
+#
+#   echo "Converted $markdown_file to public/${filename}.html"
+# done
+#
+# # Generate index page
+# if [ -f "index.md" ]; then
+#   pandoc "index.md" \
+#     --template=./src/template.html \
+#     --standalone \
+#     --metadata-file=./src/metadata.yaml \
+#     -o "public/index.html"
+#
+#   echo "Generated index page"
+# fi
+#
+# echo "Build completed!"
