@@ -23,6 +23,8 @@ chmod +x "$HOME/.local/bin/blogdor"
 
 ## usage
 
+`blogdor` requires an empty file simply titled `.blogdor` in the root directory of the blog.
+
 ```
   ./blogdor                 Build the blog (excluding drafts)
   ./blogdor new [title]     Create a new blog post
