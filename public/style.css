@@ -1,0 +1,80 @@
+body {
+  background-color: #121212;
+  color: #33ff00;
+  font-family: "Courier New", Courier, monospace;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  line-height: 1.6;
+}
+
+header {
+  border-bottom: 1px solid #33ff00;
+  margin-bottom: 30px;
+  padding-bottom: 10px;
+}
+
+footer {
+  border-top: 1px solid #33ff00;
+  margin-top: 30px;
+  padding-top: 10px;
+  text-align: center;
+  font-size: 0.9em;
+}
+
+a {
+  color: #ff00ff;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.site-title {
+  text-align: center;
+  font-size: 2.5em;
+  margin-bottom: 10px;
+}
+
+nav ul {
+  display: flex;
+  justify-content: center;
+  list-style: none;
+  padding: 0;
+}
+
+nav ul li {
+  margin: 0 15px;
+}
+
+.post-title {
+  border-bottom: 1px dashed #33ff00;
+  padding-bottom: 10px;
+}
+
+.post-date {
+  color: #cccccc;
+  margin-bottom: 20px;
+  font-style: italic;
+}
+
+code {
+  background: #1e1e1e;
+  padding: 2px 5px;
+  border: 1px solid #333;
+}
+
+pre {
+  background: #1e1e1e;
+  padding: 15px;
+  overflow-x: auto;
+  border: 1px solid #333;
+}
+
+blockquote {
+  border-left: 3px solid #33ff00;
+  padding-left: 15px;
+  color: #cccccc;
+  font-style: italic;
+}
