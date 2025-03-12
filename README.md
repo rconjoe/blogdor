@@ -25,6 +25,9 @@ chmod +x "$HOME/.local/bin/blogdor"
 
 `blogdor` requires an empty file simply titled `.blogdor` in the root directory of the blog.
 
+_in the future, the status check on this file (present & empty) will be used to determine error handling operations._
+_ for now, it just ensures we don't try to build in a directory that isn't the root of a blog._
+
 ```
   ./blogdor                 Build the blog (excluding drafts)
   ./blogdor new [title]     Create a new blog post
