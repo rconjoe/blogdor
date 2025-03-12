@@ -8,38 +8,53 @@ PUBLIC_DIR="public"
 TEMPLATE="./src/template.html"
 METADATA="./src/metadata.yaml"
 STYLES="./src/style.css"
+PREVIEW_DIR="preview" # Separate directory for preview builds
 
 # Create directories if they don't exist
 mkdir -p "$POSTS_DIR"
 mkdir -p "$PUBLIC_DIR"
+mkdir -p "$PREVIEW_DIR"
 
 # Function to show help
 show_help() {
   echo "Blogdor - A simple static blog generator"
   echo ""
   echo "Usage:"
-  echo "  ./blogdor                 Build the entire blog"
+  echo "  ./blogdor                 Build the blog (excluding drafts)"
   echo "  ./blogdor new [title]     Create a new blog post"
-  echo "  ./blogdor serve           Start a local server"
-  echo "  ./blogdor clean           Remove the build directory"
+  echo "  ./blogdor preview         Build the blog including draft posts"
+  echo "  ./blogdor serve           Start a local server for the public site"
+  echo "  ./blogdor serve-preview   Start a local server for the preview site"
+  echo "  ./blogdor clean           Remove the build directories"
   echo "  ./blogdor help            Show this help message"
   echo ""
 }
 
-# Function to build the blog
+# Function to build the blog (excluding drafts)
 build_blog() {
-  echo "🔨 Building blog..."
+  local output_dir="$1"
+  local include_drafts="$2"
+  local build_type="Production"
+
+  if [ "$include_drafts" = true ]; then
+    build_type="Preview"
+  fi
+
+  echo "🔨 Building $build_type blog to $output_dir..."
+
+  # Create output directory if it doesn't exist
+  mkdir -p "$output_dir"
 
   # Copy CSS file to output directory
-  cp $STYLES "$PUBLIC_DIR/"
+  cp $STYLES "$output_dir/"
 
   # Process all markdown files in the posts directory
   for markdown_file in "$POSTS_DIR"/*.md; do
     # Skip if no files found
     [ -e "$markdown_file" ] || continue
 
-    # Check if the post is a draft
-    if grep -q "^draft: true" "$markdown_file"; then
+    # Check if post is a draft and skip if needed
+    if [ "$include_drafts" = false ] && grep -q "^draft: true" "$markdown_file"; then
       echo "⏩ Skipping draft: $markdown_file"
       continue
     fi
@@ -47,28 +62,140 @@ build_blog() {
     # Extract filename without extension
     filename=$(basename "$markdown_file" .md)
 
-    # Convert markdown to HTML with our template
-    pandoc "$markdown_file" \
-      --template="$TEMPLATE" \
-      --standalone \
-      --metadata-file="$METADATA" \
-      -o "$PUBLIC_DIR/${filename}.html"
+    # If this is a draft post in preview mode, add visual indicator to title
+    if [ "$include_drafts" = true ] && grep -q "^draft: true" "$markdown_file"; then
+      # Create a temporary file with modified title for drafts
+      temp_file=$(mktemp)
 
-    echo "✅ Converted $markdown_file to $PUBLIC_DIR/${filename}.html"
+      # Add draft indicator to title in the temporary file
+      sed 's/^title: "\(.*\)"$/title: "[DRAFT] \1"/' "$markdown_file" >"$temp_file"
+
+      # Use the temp file for conversion
+      pandoc "$temp_file" \
+        --template="$TEMPLATE" \
+        --standalone \
+        --metadata-file="$METADATA" \
+        --metadata=draft:true \
+        -o "$output_dir/${filename}.html"
+
+      # Remove temp file
+      rm "$temp_file"
+
+      echo "✅ Converted DRAFT $markdown_file to $output_dir/${filename}.html"
+    else
+      # Regular conversion for non-draft posts
+      pandoc "$markdown_file" \
+        --template="$TEMPLATE" \
+        --standalone \
+        --metadata-file="$METADATA" \
+        -o "$output_dir/${filename}.html"
+
+      echo "✅ Converted $markdown_file to $output_dir/${filename}.html"
+    fi
   done
 
   # Generate an index page from a special markdown file
   if [ -f "index.md" ]; then
-    pandoc "index.md" \
-      --template="$TEMPLATE" \
-      --standalone \
-      --metadata-file="$METADATA" \
-      -o "$PUBLIC_DIR/index.html"
+    # Add a note to preview mode index
+    if [ "$include_drafts" = true ]; then
+      # Create a temp index with preview notice
+      temp_index=$(mktemp)
+
+      cat >"$temp_index" <<EOF
+---
+title: "Preview Mode - Including Drafts"
+---
+
+# Preview Mode - Including Drafts
+
+This is a preview of your blog that includes both draft and published posts.
+To view only published content, visit the [production build](../public/index.html).
+
+$(cat index.md | grep -v "^---" | grep -v "^title:" | grep -v "^#")
+EOF
+
+      pandoc "$temp_index" \
+        --template="$TEMPLATE" \
+        --standalone \
+        --metadata-file="$METADATA" \
+        -o "$output_dir/index.html"
+
+      rm "$temp_index"
+    else
+      # Normal index for production
+      pandoc "index.md" \
+        --template="$TEMPLATE" \
+        --standalone \
+        --metadata-file="$METADATA" \
+        -o "$output_dir/index.html"
+    fi
 
     echo "✅ Generated index page"
   fi
 
-  echo "🎉 Build completed!"
+  # Create a list of all posts
+  if [ "$include_drafts" = true ]; then
+    # For preview mode, create an archive that shows draft status
+    create_archive "$output_dir" true
+  else
+    # For production mode, create a normal archive
+    create_archive "$output_dir" false
+  fi
+
+  echo "🎉 $build_type build completed!"
+}
+
+# Function to create an archive page
+create_archive() {
+  local output_dir="$1"
+  local include_drafts="$2"
+  local archive_file="$output_dir/archive.html"
+  local temp_archive=$(mktemp)
+
+  # Create temporary markdown for the archive
+  cat >"$temp_archive" <<EOF
+---
+title: "Blog Archive"
+---
+
+# Blog Archive
+
+EOF
+
+  # Add list of posts
+  for post_file in "$POSTS_DIR"/*.md; do
+    # Skip if no files found
+    [ -e "$post_file" ] || continue
+
+    # Get post metadata
+    post_title=$(grep "^title:" "$post_file" | cut -d'"' -f2)
+    post_date=$(grep "^date:" "$post_file" | cut -d'"' -f2)
+    post_filename=$(basename "$post_file" .md)
+    is_draft=$(grep -q "^draft: true" "$post_file" && echo true || echo false)
+
+    # Skip drafts if not including them
+    if [ "$include_drafts" = false ] && [ "$is_draft" = true ]; then
+      continue
+    fi
+
+    # Add entry to archive
+    if [ "$is_draft" = true ]; then
+      echo "- $post_date: [${post_title} (DRAFT)](${post_filename}.html)" >>"$temp_archive"
+    else
+      echo "- $post_date: [${post_title}](${post_filename}.html)" >>"$temp_archive"
+    fi
+  done
+
+  # Convert to HTML
+  pandoc "$temp_archive" \
+    --template="$TEMPLATE" \
+    --standalone \
+    --metadata-file="$METADATA" \
+    -o "$archive_file"
+
+  rm "$temp_archive"
+
+  echo "✅ Generated archive page"
 }
 
 # Function to create a new post
@@ -131,41 +258,40 @@ More content here...
 EOF
 
   echo "✅ Created new post: $filename"
-
-  # Optionally open in default editor
-  if [ -n "$EDITOR" ]; then
-    $EDITOR "$filename"
-  else
-    echo "📝 Edit your post with your favorite editor"
-  fi
 }
+
 # Function to start a local server
 serve_blog() {
-  echo "🌐 Starting local server at http://localhost:8000"
+  local dir="$1"
+  echo "🌐 Starting local server for $dir at http://localhost:8000"
   echo "Press Ctrl+C to stop"
-  cd "$PUBLIC_DIR" && python3 -m http.server 8000
+  cd "$dir" && python3 -m http.server 8000
 }
 
 # Function to clean build directory
 clean_blog() {
-  echo "🧹 Cleaning build directory..."
+  echo "🧹 Cleaning build directories..."
   rm -rf "$PUBLIC_DIR"/*
-  echo "✅ Build directory cleaned"
+  rm -rf "$PREVIEW_DIR"/*
+  echo "✅ Build directories cleaned"
 }
 
 # Main command logic
 case "$1" in
-"")
-  build_blog
+"" | "build")
+  build_blog "$PUBLIC_DIR" false
   ;;
-"build")
-  build_blog
+"preview")
+  build_blog "$PREVIEW_DIR" true
   ;;
 "new")
   create_new_post "$2"
   ;;
 "serve")
-  serve_blog
+  serve_blog "$PUBLIC_DIR"
+  ;;
+"serve-preview")
+  serve_blog "$PREVIEW_DIR"
   ;;
 "clean")
   clean_blog
@@ -181,40 +307,3 @@ case "$1" in
 esac
 
 exit 0
-
-# #!/usr/bin/env bash
-#
-# # Create output directory if it doesn't exist
-# mkdir -p public
-#
-# # Copy CSS file to output directory
-# cp ./src/style.css public/
-#
-# # Process all markdown files in the posts directory
-# for markdown_file in ./src/posts/*.md; do
-#   # Extract filename without extension
-#   filename=$(basename "$markdown_file" .md)
-#
-#   # Convert markdown to HTML with our template
-#   pandoc "$markdown_file" \
-#     --template=./src/template.html \
-#     --standalone \
-#     --metadata-file=./src/metadata.yaml \
-#     --highlight-style=zenburn \
-#     -o "public/${filename}.html"
-#
-#   echo "Converted $markdown_file to public/${filename}.html"
-# done
-#
-# # Generate index page
-# if [ -f "index.md" ]; then
-#   pandoc "index.md" \
-#     --template=./src/template.html \
-#     --standalone \
-#     --metadata-file=./src/metadata.yaml \
-#     -o "public/index.html"
-#
-#   echo "Generated index page"
-# fi
-#
-# echo "Build completed!"
