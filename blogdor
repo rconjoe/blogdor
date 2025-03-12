@@ -3,17 +3,18 @@
 set -e
 
 # Configuration
-POSTS_DIR="./src/posts"
+POSTS_DIR="posts"
 PUBLIC_DIR="public"
-TEMPLATE="./src/template.html"
-METADATA="./src/metadata.yaml"
-STYLES="./src/style.css"
+TEMPLATE="template.html"
+METADATA="metadata.yaml"
 PREVIEW_DIR="preview" # Separate directory for preview builds
+IMAGES_DIR="images"   # Directory for storing images
 
 # Create directories if they don't exist
 mkdir -p "$POSTS_DIR"
 mkdir -p "$PUBLIC_DIR"
 mkdir -p "$PREVIEW_DIR"
+mkdir -p "$IMAGES_DIR" # Create images directory
 
 # Function to show help
 show_help() {
@@ -28,6 +29,23 @@ show_help() {
   echo "  ./blogdor clean           Remove the build directories"
   echo "  ./blogdor help            Show this help message"
   echo ""
+  echo "Image Support:"
+  echo "  - Place images in the '$IMAGES_DIR/' directory"
+  echo "  - Reference in markdown as: ![Alt text]($IMAGES_DIR/image-name.jpg)"
+  echo ""
+}
+
+# Function to copy images to output directory
+copy_images() {
+  local output_dir="$1"
+
+  # Create images directory in output dir if it doesn't exist
+  mkdir -p "$output_dir/$IMAGES_DIR"
+
+  # Copy all images
+  cp -R "$IMAGES_DIR"/* "$output_dir/$IMAGES_DIR/" 2>/dev/null || true
+
+  echo "📷 Copied images to $output_dir/$IMAGES_DIR/"
 }
 
 # Function to build the blog (excluding drafts)
@@ -46,7 +64,10 @@ build_blog() {
   mkdir -p "$output_dir"
 
   # Copy CSS file to output directory
-  cp $STYLES "$output_dir/"
+  cp style.css "$output_dir/"
+
+  # Copy images to output directory
+  copy_images "$output_dir"
 
   # Process all markdown files in the posts directory
   for markdown_file in "$POSTS_DIR"/*.md; do
@@ -251,13 +272,37 @@ echo "Hello, World!"
 
 More content here...
 
-![Alt text](images/placeholder.jpg)
+![Example Image]($IMAGES_DIR/example.jpg)
 
 > A blockquote for good measure
 
 EOF
 
   echo "✅ Created new post: $filename"
+
+  # Create a placeholder image if it doesn't exist
+  if [ ! -f "$IMAGES_DIR/example.jpg" ]; then
+    # Check if we can create a simple placeholder with ImageMagick
+    if command -v convert >/dev/null 2>&1; then
+      convert -size 800x400 gradient:#333333-#555555 \
+        -gravity center -pointsize 40 -fill white \
+        -annotate 0 "Placeholder Image" \
+        "$IMAGES_DIR/example.jpg"
+      echo "📷 Created placeholder image at $IMAGES_DIR/example.jpg"
+    else
+      echo "ℹ️ Tip: Install ImageMagick to auto-generate placeholder images"
+      echo "   Or add your own images to the '$IMAGES_DIR/' directory"
+      mkdir -p "$IMAGES_DIR"
+      touch "$IMAGES_DIR/example.jpg"
+    fi
+  fi
+
+  # Optionally open in default editor
+  if [ -n "$EDITOR" ]; then
+    $EDITOR "$filename"
+  else
+    echo "📝 Edit your post with your favorite editor"
+  fi
 }
 
 # Function to start a local server
