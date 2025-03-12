@@ -4,12 +4,12 @@ really simple static blog generator and tooling, all in a single bash file
 
 ## requirements
 
-the bash script expects the following programs to be on your $PATH:
+the script is written to run on any linux system with a bash shell and the following programs on $PATH:
 
 - **bash**: at the time of writing I use v5.2.37.
 - **pandoc**: does most of the heavy lifting.
-- **python3** (optional): used to serve files during development.
-- **imagemagick** (optional): helps with image support.
+- **python3**: used to serve files during development.
+- **imagemagick**: helps with image support.
 
 ## installation
 
