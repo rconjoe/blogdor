@@ -19,4 +19,4 @@ I write code and tinker with things that look like I could take them apart.
 
 ## This Site is just HTML + CSS
 
-This blog is intentionally minimalist - just markdown files transformed to HTML using pandoc. No JavaScript (except to syntax highlight code - thanks [highlight.js](https://highlightjs.org), no analytics, no cookies - just pure HTML and CSS, because that meets my requirements here.
+This blog is intentionally minimalist - just markdown files transformed to HTML using pandoc. No JavaScript, no analytics, no cookies - just pure HTML and CSS, because that meets my requirements here.
