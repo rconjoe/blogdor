@@ -16,7 +16,8 @@ it is meant to meet the following requirements i have for my personal blog:
 once upon a time, I used [vimwiki](https://github.com/vimwiki/vimwiki) for my blog, and it was heaven.
 it doesn't work the same for me in neovim nowadays, after which i tried hexo, next.js, hugo, gatsby, and jekyll.
 
-this is basically a counter-reaction to every ssg in that list having too many features for my requirements.
+this is basically a counter-reaction to everything that list having too many features for my requirements.
+
 since everything i need to do throughout the process can fit in a single bash file, i made `blogdor`.
 
 ## requirements
