@@ -65,6 +65,7 @@ build_blog() {
 
   # Copy CSS file to output directory
   cp style.css "$output_dir/"
+  cp CNAME "$output_dir/"
 
   # Copy images to output directory
   copy_images "$output_dir"
