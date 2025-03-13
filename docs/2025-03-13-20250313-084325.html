@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Post on 2025-03-13 08:43:25</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/monokai-sublime.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script>
+      hljs.highlightAll();
+    </script>
+        <meta name="description" content="blogdor" />
+      </head>
+  <body>
+    <header>
+      <h1 class="site-title"><a href="index.html">trog.codes</a></h1>
+      <nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="archive.html">Archive</a></li>
+          <!-- <li><a href="about.html">About</a></li> -->
+          <li><a href="mailto:root@trog.codes">Contact</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article>
+        <h1 class="post-title">Post on 2025-03-13 08:43:25</h1>
+                <div class="post-date">Posted on: 2025-03-13
+08:43:25</div>
+         <h1 id="post-on-2025-03-13-084325">Post on 2025-03-13
+08:43:25</h1>
+<p>Over the last few weeks, I have spent a lot of time getting to know
+<a href="https://www.electronjs.org/docs/latest/">Electron</a>.</p>
+<p>Being super comfortable with the process of cramming javascript into
+places it doesn’t belong, I am already adept with a good chunk of the
+curriculum. The only thing that has been in the dark for me for years is
+the specifics on how to use electron IPC. I understand that Electron
+uses a special Chromium instance, Node.js and a process isolation model
+between the two. A main process runs as a native context on the user’s
+OS, which spawns sandboxed BrowserWindow instances (whose process is
+called a “renderer”). BrowserWindows in Electron are just undecorated
+Chromium windows with stunted permissions. I have focused on learning
+the surface areas of:</p>
+<ul>
+<li><a
+href="https://www.electronjs.org/docs/latest/api/ipc-main">ipcMain</a></li>
+<li><a
+href="https://www.electronjs.org/docs/latest/api/ipc-renderer">ipcRenderer</a></li>
+<li><a
+href="https://www.electronjs.org/docs/latest/api/browser-window">BrowserWindow</a></li>
+</ul>
+<p>So far my understanding is that these are essentially three of the
+most core pieces of using IPC. Everything revolves around nodejs
+EventEmitters and a “Context Bridge” that is used to expose individual
+functions from the main process to the Chromium <code>window</code>
+available in the renderer process.</p>
+<p>I thought a good exercise would be to get something like an OAuth
+code grant flow working in an Electron app, since this requires
+familiarity with:</p>
+<ol type="1">
+<li>spawning windows, since we must open one to send the user to the
+OAuth url,</li>
+<li>IPC between the main process and renderers, so the main process can
+make requests with secrets and complete the OAuth grant flow in
+conjunction with the renderer process.</li>
+</ol>
+<p>I’ve been able to get decently far, but right now am stuck with an
+IPC issue I am still debugging my way through: I am able to open a new
+window to the twitch.tv auth URL, get a scope approvals prompt, and
+redirect back to localhost:5173 - however the redirect happens in the
+popup window instead of following the code I <em>thought</em> I got
+right, which says to extract the access_token, send it to the backend,
+and close the popup window. So something towards the end of the process
+is going wrong, since I am getting a successful redirect but am screwing
+up either the code extraction or the “close the popup window” directives
+in electron.</p>
+      </article>
+    </main>
+
+    <footer>
+      <div class="retro-elements">
+        <a href="index.html">Home</a> | <a href="archive.html">Archive</a> |
+        <!-- <a href="about.html">About</a> | -->
+        <a href="mailto:root@trog.codes">Contact</a> |
+        <a href="https://github.com/rconjoe/blogdor">Source</a>
+      </div>
+
+      <div class="visitor-counter">
+        You are visitor #42 (just kidding, fuck tracking)
+      </div>
+      <p><small>Made with bash, markdown, pandoc, and nostalgia</small></p>
+    </footer>
+  </body>
+</html>
