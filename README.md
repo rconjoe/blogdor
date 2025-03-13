@@ -1,6 +1,24 @@
 # blogdor
 
-really simple static blog generator and tooling, all in a single bash file
+## what
+
+really simple static blog generator and tooling, all in a single bash file.
+it is meant to meet the following requirements i have for my personal blog:
+
+1. create new blog posts in markdown
+2. translate markdown to html
+3. publish html to servers
+4. support easy image usage in posts
+5. support drafts
+6. fit in a single bash file
+
+## why
+
+once upon a time, I used [vimwiki](https://github.com/vimwiki/vimwiki) for my blog, and it was heaven.
+it doesn't work the same for me in neovim nowadays, after which i tried hexo, next.js, hugo, gatsby, and jekyll.
+
+this is basically a counter-reaction to every ssg in that list having too many features for my requirements.
+since everything i need to do throughout the process can fit in a single bash file, i made `blogdor`.
 
 ## requirements
 
@@ -37,3 +55,9 @@ _ for now, it just ensures we don't try to build in a directory that isn't the r
   ./blogdor clean           Remove the build directories
   ./blogdor help            Show this help message
 ```
+
+## LICENSE
+
+MIT.
+
+don't ask me for help before you submit a PR. even then, i might ignore you.
