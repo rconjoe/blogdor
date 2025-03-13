@@ -10,7 +10,8 @@ it is meant to meet the following requirements i have for my personal blog:
 3. publish html to servers
 4. support easy image usage in posts
 5. support drafts
-6. fit in a single bash file
+6. archive posts
+7. fit in a single bash file
 
 ## why
 
