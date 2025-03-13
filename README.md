@@ -1,7 +1,5 @@
 # blogdor
 
-## what
-
 really simple static blog generator and tooling, all in a single bash file.
 it is meant to meet the following requirements i have for my personal blog:
 
