@@ -4,7 +4,7 @@ set -e
 
 # Configuration
 POSTS_DIR="posts"
-PUBLIC_DIR="public"
+PUBLIC_DIR="docs"
 TEMPLATE="template.html"
 METADATA="metadata.yaml"
 PREVIEW_DIR="preview" # Separate directory for preview builds
