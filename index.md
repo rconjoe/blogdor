@@ -4,7 +4,7 @@ title: "the internet is a series of tubes"
 
 You've stumbled into a geek's cave.
 
-This is where I try to document some of the things I do with programming, and whatever other tangential areas.
+This is where I try to document some of the things I do in programming and whatever other tangential areas.
 
 ## About Me
 
