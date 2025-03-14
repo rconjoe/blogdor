@@ -184,7 +184,10 @@ title: "Blog Archive"
 
 EOF
 
-  # Add list of posts
+  # Create an array to hold all entries
+  declare -a entries=()
+
+  # Collect all posts
   for post_file in "$POSTS_DIR"/*.md; do
     # Skip if no files found
     [ -e "$post_file" ] || continue
@@ -200,11 +203,30 @@ EOF
       continue
     fi
 
-    # Add entry to archive
+    # Create the entry line
     if [ "$is_draft" = true ]; then
-      echo "- $post_date: [${post_title} (DRAFT)](${post_filename}.html)" >>"$temp_archive"
+      entries+=("$post_date|$post_filename|$post_title|DRAFT")
     else
-      echo "- $post_date: [${post_title}](${post_filename}.html)" >>"$temp_archive"
+      entries+=("$post_date|$post_filename|$post_title|")
+    fi
+  done
+
+  # Sort entries by date in reverse order (newest first)
+  # Using sort with -r for reverse and -t'|' to specify pipe as delimiter
+  # and -k1,1 to sort by the first field (date)
+  IFS=$'\n' sorted_entries=($(sort -r -t'|' -k1,1 <<<"${entries[*]}"))
+  unset IFS
+
+  # Add entries to the archive in sorted order
+  for entry in "${sorted_entries[@]}"; do
+    # Split the entry into parts
+    IFS='|' read -r date filename title draft <<<"$entry"
+
+    # Add to archive file
+    if [ -n "$draft" ]; then
+      echo "- $date: [$title (DRAFT)]($filename.html)" >>"$temp_archive"
+    else
+      echo "- $date: [$title]($filename.html)" >>"$temp_archive"
     fi
   done
 
