@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Post on 2025-03-20 10:51:02</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/monokai-sublime.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script>
+      hljs.highlightAll();
+    </script>
+        <meta name="description" content="blogdor" />
+      </head>
+  <body>
+    <header>
+      <h1 class="site-title"><a href="index.html">trog.codes</a></h1>
+      <nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="archive.html">Archive</a></li>
+          <!-- <li><a href="about.html">About</a></li> -->
+          <li><a href="mailto:root@trog.codes">Contact</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article>
+        <h1 class="post-title">Post on 2025-03-20 10:51:02</h1>
+                <div class="post-date">Posted on: 2025-03-20
+10:51:02</div>
+         <h1 id="i-was-wrong-about-synergy">I was wrong about
+Synergy</h1>
+<p>Last night after an hour or so of being defeated by Symless’ Synergy,
+I asked support for a refund, to which they replied with some useful
+information: there is an <a
+href="https://aur.archlinux.org/packages/synergy3-bin">AUR package</a>
+that installs Synergy in <code>/opt</code>. While not straightforward,
+there is a comment in the package thread that explained some key
+information by which I finally got everything working:</p>
+<blockquote>
+<p>Run /opt/Synergy/synergy to open the GUI. Press ignore whenever an
+error pops up (it’s related to OS version not getting detected properly,
+which doesn’t matter as far as I can tell). Configure any way you like.
+Make sure the correct computer has the keyboard/mouse (you can change it
+under “Manage computers” menu by clicking the 3 dots right next to the
+computer you want to be the server and click “Keyboard and mouse
+computer”).</p>
+<p>At this point Synergy should work as expected. If it doesn’t work
+check the logs in GUI and .local/state/Synergy/synergy.log. Don’t
+continue to the next steps until Synergy works properly.</p>
+<p>Quit GUI. Kill the synergy-service process.</p>
+<p>GUI is no longer needed unless you need to configure something from
+the GUI. So you can just remove ~/.config/synergy/ directory (note the
+lowercase “s”). Don’t remove the ~/.config/Synergy/ directory (note the
+uppercase “S”)</p>
+<p>Now all you need is to run /opt/Synergy/synergy-service which you can
+either do directly or via a user unit systemctl –user enable –now
+synergy.service.</p>
+</blockquote>
+      </article>
+    </main>
+
+    <footer>
+      <div class="retro-elements">
+        <a href="index.html">Home</a> | <a href="archive.html">Archive</a> |
+        <!-- <a href="about.html">About</a> | -->
+        <a href="mailto:root@trog.codes">Contact</a> |
+        <a href="https://github.com/rconjoe/blogdor">Source</a>
+      </div>
+
+      <div class="visitor-counter">You are visitor #42 (jk, fuck tracking)</div>
+      <p><small>Made with bash, markdown, pandoc, and nostalgia</small></p>
+    </footer>
+  </body>
+</html>
