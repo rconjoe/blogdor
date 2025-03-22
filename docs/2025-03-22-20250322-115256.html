@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kysely code generation in different environments</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/monokai-sublime.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script>
+      hljs.highlightAll();
+    </script>
+        <meta name="description" content="blogdor" />
+      </head>
+  <body>
+    <header>
+      <h1 class="site-title"><a href="index.html">trog.codes</a></h1>
+      <nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="archive.html">Archive</a></li>
+          <!-- <li><a href="about.html">About</a></li> -->
+          <li><a href="mailto:root@trog.codes">Contact</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article>
+        <h1 class="post-title">Kysely code generation in different
+environments</h1>
+                <div class="post-date">Posted on: 2025-03-22
+11:52:56</div>
+         <h1 id="pretty-fun">Pretty fun</h1>
+<p>After initially being unable to generate any code on a mill worker
+last night, I ran the process on my own machine without a problem.
+Re-examining everything on the worker, I realized the variable I was
+pulling for <code>DATABASE_URL</code> was mistakenly set to be a youtube
+API key, which once I fixed resulted in the following:</p>
+<p>this script -</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> kysely</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> kysely</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> init <span class="at">-y</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> install <span class="at">-D</span> kysely-codegen</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> install kysely pg</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="va">DATABASE_URL</span><span class="op">=</span><span class="va">$(</span><span class="ex">curl</span> <span class="at">-s</span> <span class="at">-H</span> <span class="st">&quot;Authorization: Bearer </span><span class="va">$WM_TOKEN</span><span class="st">&quot;</span> <span class="dt">\</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;</span><span class="va">$BASE_INTERNAL_URL</span><span class="st">/api/w/</span><span class="va">$WM_WORKSPACE</span><span class="st">/variables/get_value/f/db/tonka_railway_pg&quot;</span> <span class="kw">|</span> <span class="ex">jq</span> <span class="at">-r</span> .<span class="va">)</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;DATABASE_URL=</span><span class="va">$DATABASE_URL</span><span class="st">&quot;</span> <span class="op">&gt;</span> .env</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="ex">npx</span> kysely-codegen <span class="at">--out-file</span> ./db.d.ts</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> ./db.d.ts</span></code></pre></div>
+<p>yields the following results from some scaffolded data I seeded the
+other day:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="va">job</span><span class="op">=</span>0195bf32-6858-2319-f08d-1ea9d633f775 <span class="va">tag</span><span class="op">=</span>bash <span class="va">worker</span><span class="op">=</span>wk-default-dbc66e36aae7-DCh4C <span class="va">hostname</span><span class="op">=</span>dbc66e36aae7</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="ex">---</span> BASH CODE EXECUTION <span class="at">---</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="ex">Wrote</span> to /tmp/windmill/wk-default-dbc66e36aae7-DCh4C/0195bf32-6858-2319-f08d-1ea9d633f775/kysely/package.json:</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="kw">{</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;name&quot;</span><span class="ex">:</span> <span class="st">&quot;kysely&quot;</span>,</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;version&quot;</span><span class="ex">:</span> <span class="st">&quot;1.0.0&quot;</span>,</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;main&quot;</span><span class="ex">:</span> <span class="st">&quot;index.js&quot;</span>,</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;scripts&quot;</span><span class="ex">:</span> {</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;test&quot;</span><span class="ex">:</span> <span class="st">&quot;echo </span><span class="dt">\&quot;</span><span class="st">Error: no test specified</span><span class="dt">\&quot;</span><span class="st"> &amp;&amp; exit 1&quot;</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="ex">},</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;keywords&quot;</span><span class="ex">:</span> [],</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;author&quot;</span><span class="ex">:</span> <span class="st">&quot;&quot;</span>,</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;license&quot;</span><span class="ex">:</span> <span class="st">&quot;ISC&quot;</span>,</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;description&quot;</span><span class="ex">:</span> <span class="st">&quot;&quot;</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="ex">added</span> 67 packages, and audited 68 packages in 3s</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="ex">16</span> packages are looking for funding</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>  <span class="ex">run</span> <span class="kw">`</span><span class="ex">npm</span> fund<span class="kw">`</span> for details</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="ex">found</span> 0 vulnerabilities</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="ex">added</span> 14 packages, and audited 82 packages in 930ms</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="ex">16</span> packages are looking for funding</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>  <span class="ex">run</span> <span class="kw">`</span><span class="ex">npm</span> fund<span class="kw">`</span> for details</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="ex">found</span> 0 vulnerabilities</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a><span class="ex">•</span> Loaded environment variables from <span class="st">&#39;.env&#39;</span>.</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a><span class="ex">•</span> No dialect specified. Assuming <span class="st">&#39;postgres&#39;</span>.</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="ex">•</span> Introspecting database...</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a><span class="ex">✓</span> Introspected 4 tables and generated ./db.d.ts in 306ms.</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="ex">/**</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a> <span class="ex">*</span> This file was generated by kysely-codegen.</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a> <span class="ex">*</span> Please do not edit it manually.</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a> <span class="ex">*/</span></span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a><span class="ex">import</span> type { ColumnType } from <span class="st">&quot;kysely&quot;</span><span class="kw">;</span></span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">type</span> <span class="va">Generated</span><span class="op">&lt;</span>T<span class="op">&gt;</span> = T extends ColumnType<span class="op">&lt;</span>infer S, infer I, infer U<span class="op">&gt;</span></span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>  <span class="ex">?</span> ColumnType<span class="op">&lt;</span>S, I <span class="kw">|</span> <span class="ex">undefined,</span> U<span class="op">&gt;</span></span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>  <span class="bu">:</span> ColumnType<span class="op">&lt;</span>T, T <span class="kw">|</span> <span class="ex">undefined,</span> T<span class="op">&gt;</span><span class="kw">;</span></span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">type</span> <span class="va">Numeric</span> <span class="op">=</span> <span class="va">ColumnType</span><span class="op">&lt;</span>string, number <span class="kw">|</span> <span class="ex">string,</span> number <span class="kw">|</span> <span class="ex">string</span><span class="op">&gt;</span><span class="kw">;</span></span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">type</span> <span class="va">Timestamp</span> <span class="op">=</span> <span class="va">ColumnType</span><span class="op">&lt;</span>Date, Date <span class="kw">|</span> <span class="ex">string,</span> Date <span class="kw">|</span> <span class="ex">string</span><span class="op">&gt;</span><span class="kw">;</span></span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">interface</span> <span class="va">Categories</span> {</span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>  <span class="ex">category_id:</span> Generated<span class="op">&lt;</span>number<span class="op">&gt;</span><span class="kw">;</span></span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>  <span class="ex">created_at:</span> Generated<span class="op">&lt;</span>Timestamp<span class="op">&gt;</span><span class="kw">;</span></span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>  <span class="ex">description:</span> string <span class="kw">|</span> <span class="ex">null</span><span class="kw">;</span></span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>  <span class="ex">name:</span> string<span class="kw">;</span></span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a><span class="er">}</span></span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">interface</span> <span class="va">Inventory</span> {</span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>  <span class="ex">inventory_id:</span> Generated<span class="op">&lt;</span>number<span class="op">&gt;</span><span class="kw">;</span></span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a>  <span class="ex">last_updated:</span> Generated<span class="op">&lt;</span>Timestamp<span class="op">&gt;</span><span class="kw">;</span></span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a>  <span class="ex">product_id:</span> number<span class="kw">;</span></span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>  <span class="ex">quantity:</span> Generated<span class="op">&lt;</span>number<span class="op">&gt;</span><span class="kw">;</span></span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a><span class="er">}</span></span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">interface</span> <span class="va">Products</span> {</span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a>  <span class="ex">category_id:</span> number <span class="kw">|</span> <span class="ex">null</span><span class="kw">;</span></span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a>  <span class="ex">created_at:</span> Generated<span class="op">&lt;</span>Timestamp<span class="op">&gt;</span><span class="kw">;</span></span>
+<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a>  <span class="ex">description:</span> string <span class="kw">|</span> <span class="ex">null</span><span class="kw">;</span></span>
+<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a>  <span class="ex">image_url:</span> string <span class="kw">|</span> <span class="ex">null</span><span class="kw">;</span></span>
+<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a>  <span class="ex">is_active:</span> Generated<span class="op">&lt;</span>boolean <span class="kw">|</span> <span class="ex">null</span><span class="op">&gt;</span><span class="kw">;</span></span>
+<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a>  <span class="ex">name:</span> string<span class="kw">;</span></span>
+<span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a>  <span class="ex">price:</span> Numeric<span class="kw">;</span></span>
+<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a>  <span class="ex">product_id:</span> Generated<span class="op">&lt;</span>number<span class="op">&gt;</span><span class="kw">;</span></span>
+<span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a>  <span class="ex">sku:</span> string <span class="kw">|</span> <span class="ex">null</span><span class="kw">;</span></span>
+<span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a>  <span class="ex">updated_at:</span> Timestamp <span class="kw">|</span> <span class="ex">null</span><span class="kw">;</span></span>
+<span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a><span class="er">}</span></span>
+<span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">interface</span> <span class="va">ProductVariants</span> {</span>
+<span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a>  <span class="ex">additional_price:</span> Generated<span class="op">&lt;</span>Numeric <span class="kw">|</span> <span class="ex">null</span><span class="op">&gt;</span><span class="kw">;</span></span>
+<span id="cb2-70"><a href="#cb2-70" aria-hidden="true" tabindex="-1"></a>  <span class="ex">color:</span> string <span class="kw">|</span> <span class="ex">null</span><span class="kw">;</span></span>
+<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a>  <span class="ex">inventory_count:</span> Generated<span class="op">&lt;</span>number<span class="op">&gt;</span><span class="kw">;</span></span>
+<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a>  <span class="ex">product_id:</span> number<span class="kw">;</span></span>
+<span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a>  <span class="ex">size:</span> string <span class="kw">|</span> <span class="ex">null</span><span class="kw">;</span></span>
+<span id="cb2-74"><a href="#cb2-74" aria-hidden="true" tabindex="-1"></a>  <span class="ex">variant_id:</span> Generated<span class="op">&lt;</span>number<span class="op">&gt;</span><span class="kw">;</span></span>
+<span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a><span class="er">}</span></span>
+<span id="cb2-76"><a href="#cb2-76" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">interface</span> <span class="va">DB</span> {</span>
+<span id="cb2-77"><a href="#cb2-77" aria-hidden="true" tabindex="-1"></a>  <span class="ex">categories:</span> Categories<span class="kw">;</span></span>
+<span id="cb2-78"><a href="#cb2-78" aria-hidden="true" tabindex="-1"></a>  <span class="ex">inventory:</span> Inventory<span class="kw">;</span></span>
+<span id="cb2-79"><a href="#cb2-79" aria-hidden="true" tabindex="-1"></a>  <span class="ex">product_variants:</span> ProductVariants<span class="kw">;</span></span>
+<span id="cb2-80"><a href="#cb2-80" aria-hidden="true" tabindex="-1"></a>  <span class="ex">products:</span> Products<span class="kw">;</span></span>
+<span id="cb2-81"><a href="#cb2-81" aria-hidden="true" tabindex="-1"></a><span class="er">}</span></span></code></pre></div>
+<p>Next is to pick a way to persist these types so I can access them in
+services/repositories across other mill scripts.</p>
+      </article>
+    </main>
+
+    <footer>
+      <div class="retro-elements">
+        <a href="index.html">Home</a> | <a href="archive.html">Archive</a> |
+        <!-- <a href="about.html">About</a> | -->
+        <a href="mailto:root@trog.codes">Contact</a> |
+        <a href="https://github.com/rconjoe/blogdor">Source</a>
+      </div>
+
+      <div class="visitor-counter">You are visitor #42 (jk, fuck tracking)</div>
+      <p><small>Made with bash, markdown, pandoc, and nostalgia</small></p>
+    </footer>
+  </body>
+</html>
