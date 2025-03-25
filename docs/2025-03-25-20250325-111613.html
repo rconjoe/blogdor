@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Catching up the frontend</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/monokai-sublime.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script>
+      hljs.highlightAll();
+    </script>
+        <meta name="description" content="blogdor" />
+      </head>
+  <body>
+    <header>
+      <h1 class="site-title"><a href="index.html">trog.codes</a></h1>
+      <nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="archive.html">Archive</a></li>
+          <!-- <li><a href="about.html">About</a></li> -->
+          <li><a href="mailto:root@trog.codes">Contact</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article>
+        <h1 class="post-title">Catching up the frontend</h1>
+                <div class="post-date">Posted on: 2025-03-25
+11:16:13</div>
+         <p><strong>Today’s plan</strong> is to catch up the frontend of
+everything I’ve been building this mill backend for. The MVP I need to
+design (at least as it is in my head right now) features video content
+and a storefront.</p>
+<h2 id="video-content">Video content</h2>
+<p>All of this is hosted on YouTube and we aren’t going to change that.
+There are shorts and full length content, on phones we should display
+shorts where we display full length on desktop. The backend interfaces
+should support content management.</p>
+<h2 id="storefront">Storefront</h2>
+<p>To start, we need to support merch and be ready for a quick extension
+into branded parts/design and booking (lessons).</p>
+<hr />
+<p>I don’t want to use Next.js for this, but I do still at least want to
+use probably Vite + React + Tailwind in some form. I have yet to figure
+these things out but hopefully those decisions can come out today.</p>
+      </article>
+    </main>
+
+    <footer>
+      <div class="retro-elements">
+        <a href="index.html">Home</a> | <a href="archive.html">Archive</a> |
+        <!-- <a href="about.html">About</a> | -->
+        <a href="mailto:root@trog.codes">Contact</a> |
+        <a href="https://github.com/rconjoe/blogdor">Source</a>
+      </div>
+
+      <div class="visitor-counter">You are visitor #42 (jk, fuck tracking)</div>
+      <p><small>Made with bash, markdown, pandoc, and nostalgia</small></p>
+    </footer>
+  </body>
+</html>
