@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cool UI Developments</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/monokai-sublime.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script>
+      hljs.highlightAll();
+    </script>
+        <meta name="description" content="blogdor" />
+      </head>
+  <body>
+    <header>
+      <h1 class="site-title"><a href="index.html">trog.codes</a></h1>
+      <nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="archive.html">Archive</a></li>
+          <!-- <li><a href="about.html">About</a></li> -->
+          <li><a href="mailto:root@trog.codes">Contact</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article>
+        <h1 class="post-title">Cool UI Developments</h1>
+                <div class="post-date">Posted on: 2025-03-25
+18:01:30</div>
+         <h1 id="progress-i-made-on-the-ui-side-of-things">Progress I
+made on the UI side of things</h1>
+<h2 id="established-stack">Established stack</h2>
+<ul>
+<li><a href="https://tanstack.com/router/latest">Tanstack
+Router</a></li>
+<li><a href="https://vite.dev">Vite</a></li>
+<li><a href="https://tailwindcss.com">TailwindCSS v4</a></li>
+<li><a href="https://ui.shadcn.com">shadcn-ui</a></li>
+</ul>
+<h2 id="video-background-layout">Video-background layout</h2>
+<p>This is a modified component from a shadcn-compatible UI library
+called <a href="https://cult-ui.com">cult-ui</a>. I changed it from the
+default to support proper z-indexing so I can build things <em>over</em>
+the media background, added more opacity, and just looped the video
+instead of having controls.</p>
+<pre class="tsx"><code>&quot;use client&quot;;
+
+import React, { useRef } from &quot;react&quot;;
+import { cva } from &quot;class-variance-authority&quot;;
+
+import { cn } from &quot;@/lib/utils&quot;;
+
+type OverlayVariant = &quot;none&quot; | &quot;light&quot; | &quot;dark&quot;;
+type MediaType = &quot;image&quot; | &quot;video&quot;;
+
+const backgroundVariants = cva(&quot;relative w-full overflow-hidden&quot;, {
+  variants: {
+    overlay: {
+      none: &quot;&quot;,
+      light:
+        &quot;before:absolute before:inset-0 before:bg-white before:opacity-40 before:z-10&quot;,
+      dark: &quot;before:absolute before:inset-0 before:bg-black before:opacity-40 before:z-10&quot;,
+    },
+    type: {
+      image: &quot;&quot;,
+      video: &quot;&quot;,
+    },
+  },
+  defaultVariants: {
+    overlay: &quot;none&quot;,
+    type: &quot;image&quot;,
+  },
+});
+
+interface BackgroundMediaProps {
+  variant?: OverlayVariant;
+  type?: MediaType;
+  src: string;
+  alt?: string;
+  className?: string;
+  children?: React.ReactNode;
+  height?: string;
+}
+
+export const BackgroundMedia: React.FC&lt;BackgroundMediaProps&gt; = ({
+  variant = &quot;light&quot;,
+  type = &quot;image&quot;,
+  src,
+  alt = &quot;&quot;,
+  className,
+  children,
+  height = &quot;h-screen min-h-[500px] lg:min-h-[600px] max-h-[1000px]&quot;,
+}) =&gt; {
+  const mediaRef = useRef&lt;HTMLVideoElement | null&gt;(null);
+  const mediaClasses = cn(
+    backgroundVariants({ overlay: variant, type }),
+    height,
+    className,
+  );
+
+  const renderMedia = () =&gt; {
+    if (type === &quot;video&quot;) {
+      return (
+        &lt;video
+          ref={mediaRef}
+          aria-hidden=&quot;true&quot;
+          muted
+          loop
+          className=&quot;absolute inset-0 h-full w-full object-cover transition-opacity duration-300 pointer-events-none z-0&quot;
+          autoPlay
+          playsInline
+        &gt;
+          &lt;source src={src} type=&quot;video/mp4&quot; /&gt;
+          Your browser does not support the video tag.
+        &lt;/video&gt;
+      );
+    } else {
+      return (
+        &lt;img
+          src={src}
+          alt={alt}
+          className=&quot;absolute inset-0 h-full w-full object-cover rounded-br-[88px] z-0&quot;
+          loading=&quot;eager&quot;
+        /&gt;
+      );
+    }
+  };
+
+  return (
+    &lt;div className={mediaClasses}&gt;
+      {renderMedia()}
+      {children &amp;&amp; (
+        &lt;div className=&quot;relative z-20 h-full w-full&quot;&gt;{children}&lt;/div&gt;
+      )}
+    &lt;/div&gt;
+  );
+};</code></pre>
+<p>and here is how I am using it in a parent component (during
+development):</p>
+<pre class="tsx"><code>&quot;use client&quot;;
+
+import React, { useState, useEffect } from &quot;react&quot;;
+import { motion } from &quot;framer-motion&quot;;
+import { BackgroundMedia } from &quot;./cult/BackgroundMedia&quot;;
+import { FaYoutube, FaInstagram } from &quot;react-icons/fa&quot;; // Make sure to install react-icons
+
+const AnimatedHero = () =&gt; {
+  // Add a state to track animation cycles for the main text only
+  const [animationKey, setAnimationKey] = useState(0);
+
+  // Set up interval to reset animation every 8 seconds
+  useEffect(() =&gt; {
+    const intervalId = setInterval(() =&gt; {
+      setAnimationKey((prevKey) =&gt; prevKey + 1);
+    }, 8000);
+
+    // Clean up interval on component unmount
+    return () =&gt; clearInterval(intervalId);
+  }, []);
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.3,
+        delayChildren: 0.1,
+      },
+    },
+  };
+
+  const wordVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 1.0, ease: &quot;easeOut&quot; },
+    },
+  };
+
+  const menuContainerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.3,
+      },
+    },
+  };
+
+  const menuItemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6, ease: &quot;easeOut&quot; },
+    },
+  };
+
+  // Define words with their colors
+  const words = [
+    { text: &quot;WHAT&#39;S&quot;, color: &quot;text-red-600/75&quot; },
+    { text: &quot;GOOD&quot;, color: &quot;text-white/75&quot; },
+    { text: &quot;AMERICA&quot;, color: &quot;text-blue-600/75&quot; },
+  ];
+
+  // Define menu links - easy to add or remove
+  const menuLinks = [
+    { text: &quot;MERCH&quot;, href: &quot;/merch&quot; },
+    { text: &quot;SPONSORS&quot;, href: &quot;/sponsors&quot; },
+    // You can add more links here and they&#39;ll automatically be spaced evenly
+  ];
+
+  // Define social media links
+  const socialLinks = [
+    { icon: &lt;FaYoutube size={24} /&gt;, href: &quot;https://youtube.com&quot; },
+    { icon: &lt;FaInstagram size={24} /&gt;, href: &quot;https://instagram.com&quot; },
+  ];
+
+  return (
+    &lt;BackgroundMedia type=&quot;video&quot; src=&quot;redacted.mp4&quot; variant=&quot;dark&quot;&gt;
+      &lt;div className=&quot;flex flex-col items-center justify-start h-full w-full pt-16 md:pt-20&quot;&gt;
+        {/* Main text - animates every 8 seconds */}
+        &lt;motion.div
+          key={animationKey}
+          className=&quot;text-5xl md:text-8xl font-bold tracking-wide flex flex-wrap justify-center gap-x-8 gap-y-1&quot;
+          variants={containerVariants}
+          initial=&quot;hidden&quot;
+          animate=&quot;visible&quot;
+        &gt;
+          {words.map((word, index) =&gt; (
+            &lt;motion.span
+              key={index}
+              variants={wordVariants}
+              className={`${word.color} text-shadow font-laser`}
+            &gt;
+              {word.text}
+            &lt;/motion.span&gt;
+          ))}
+        &lt;/motion.div&gt;
+
+        {/* Menu links - animate once on load */}
+        &lt;motion.nav
+          className=&quot;flex items-center justify-between w-full max-w-4xl px-4 mt-8 md:mt-12&quot;
+          variants={menuContainerVariants}
+          initial=&quot;hidden&quot;
+          animate=&quot;visible&quot;
+        &gt;
+          {/* Create a container that will evenly space all items */}
+          &lt;div className=&quot;w-full flex items-center justify-between&quot;&gt;
+            {/* Regular menu links */}
+            {menuLinks.map((link, index) =&gt; (
+              &lt;motion.a
+                key={index}
+                href={link.href}
+                variants={menuItemVariants}
+                className=&quot;text-white text-xl md:text-2xl font-medium tracking-wider hover:text-red-400 transition-colors duration-300 text-shadow&quot;
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              &gt;
+                {link.text}
+              &lt;/motion.a&gt;
+            ))}
+
+            {/* Social media links as a group */}
+            &lt;motion.div
+              className=&quot;flex items-center space-x-4&quot;
+              variants={menuItemVariants}
+            &gt;
+              {socialLinks.map((link, index) =&gt; (
+                &lt;motion.a
+                  key={index}
+                  href={link.href}
+                  target=&quot;_blank&quot;
+                  rel=&quot;noopener noreferrer&quot;
+                  className=&quot;text-white hover:text-red-400 transition-colors duration-300&quot;
+                  whileHover={{ scale: 1.1, rotate: 5 }}
+                  whileTap={{ scale: 0.9 }}
+                &gt;
+                  {link.icon}
+                &lt;/motion.a&gt;
+              ))}
+            &lt;/motion.div&gt;
+          &lt;/div&gt;
+        &lt;/motion.nav&gt;
+      &lt;/div&gt;
+    &lt;/BackgroundMedia&gt;
+  );
+};
+
+export default AnimatedHero;</code></pre>
+<p>It looks great even on mobile:</p>
+<p><img alt="crappy gif of wip hero" src="../images/tonkawip.gif" width="400" /></p>
+<h1 id="tomorrow">Tomorrow</h1>
+<p>Tomorrow we need to make decisions as to how we’re going to move the
+user around the different parts of the site, that being:</p>
+<ul>
+<li>merch store</li>
+<li>affiliate advertisements somehow (give it a whole page)</li>
+<li>sponsor wall</li>
+<li>media showcase</li>
+</ul>
+<p>Thankfully we have a router, and a damn good one at that (tanstack
+router) so it should be a fun process… today was productive by my
+standards since I suck at UI in general and that makes it a bit more
+difficult to have fun when I need to really make something decent.</p>
+<p>Onward and upward.</p>
+      </article>
+    </main>
+
+    <footer>
+      <div class="retro-elements">
+        <a href="index.html">Home</a> | <a href="archive.html">Archive</a> |
+        <!-- <a href="about.html">About</a> | -->
+        <a href="mailto:root@trog.codes">Contact</a> |
+        <a href="https://github.com/rconjoe/blogdor">Source</a>
+      </div>
+
+      <div class="visitor-counter">You are visitor #42 (jk, fuck tracking)</div>
+      <p><small>Made with bash, markdown, pandoc, and nostalgia</small></p>
+    </footer>
+  </body>
+</html>
