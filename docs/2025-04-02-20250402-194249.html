@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Figured out why wmill sync is broken</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/monokai-sublime.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script>
+      hljs.highlightAll();
+    </script>
+        <meta name="description" content="blogdor" />
+      </head>
+  <body>
+    <header>
+      <h1 class="site-title"><a href="index.html">trog.codes</a></h1>
+      <nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="archive.html">Archive</a></li>
+          <!-- <li><a href="about.html">About</a></li> -->
+          <li><a href="mailto:root@trog.codes">Contact</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article>
+        <h1 class="post-title">Figured out why wmill sync is broken</h1>
+                <div class="post-date">Posted on: 2025-04-02
+19:42:49</div>
+         <p><code>wmill sync</code> was busted for me (as noted in an
+earlier post). I have not tested this but it dawned on me earlier that
+the instance I’ve been trying to sync from I have placed behind
+cloudflare proxies with authorization, such that requests should not be
+permitted if they are not first authorized via one of the methods I’ve
+set up. This would include requests from wmill cli, of course.</p>
+<p>So the way I see it, the following course of action is logical:</p>
+<ol type="1">
+<li>Temporarily disable auth on the domain and see if there is still a
+failure</li>
+<li>If so, to solve the issue, either:
+<ol type="a">
+<li>leave auth off, since it’s not really necessary for this subdomain,
+only the management of the bare metal itself</li>
+<li>explore something to grant programmatic auth, which I think on CF is
+<a
+href="https://developers.cloudflare.com/cloudflare-one/identity/service-tokens/">service
+tokens</a></li>
+</ol></li>
+</ol>
+      </article>
+    </main>
+
+    <footer>
+      <div class="visitor-counter">
+        “Programming is a Dark Art, and it always will be. The programmer is
+        fighting against the two most destructive forces in the universe:
+        entropy and human stupidity. These are not things you can overcome with
+        a “methodology” or on a schedule.” - Damian Conway
+      </div>
+      <div class="retro-elements">
+        <a href="index.html">Home</a> | <a href="archive.html">Archive</a> |
+        <!-- <a href="about.html">About</a> | -->
+        <a href="mailto:root@trog.codes">Contact</a> |
+        <a href="https://github.com/rconjoe/blogdor">Source</a>
+      </div>
+    </footer>
+  </body>
+</html>
