@@ -48,6 +48,7 @@ for existing plugins. I think it’s all stuff that’s been added while
 I’ve constantly just updated all my nvim stuff and that just flew under
 the radar.</p>
 <p>Everything works for now it seems, 24 hours will tell.</p>
+<hr />
 <p><strong>EDIT</strong> 20 minutes later -</p>
 <p>These cursed errors are back. They appear to be all from
 <code>vtsls</code>. This is the one I see most often:</p>
@@ -69,6 +70,36 @@ Error: Debug Failure. False expression.\
     at process.processTicksAndRejections (node:internal/process/task_queues:91:21)&quot;</code></pre>
 <p>I am working through this for now but will mess with this garbage
 tonight -_-</p>
+<hr />
+<p><strong>EDIT 2</strong></p>
+<p>Switching to <code>ts_ls</code> (typescript-language-server) throw
+this error now:</p>
+<pre><code>Debug Failure. False expression.\
+Error: Debug Failure. False expression.\
+    at computePositionOfLineAndCharacter (/home/trog/github.com/rconjoe/bigtonka/node_modules/typescript/lib/typescript.js:11676:11)\
+    at TextStorage.lineOffsetToPosition (/home/trog/github.com/rconjoe/bigtonka/node_modules/typescript/lib/typescript.js:185507:59)\
+    at ScriptInfo.lineOffsetToPosition (/home/trog/github.com/rconjoe/bigtonka/node_modules/typescript/lib/typescript.js:185815:29)\
+    at IpcIOSession.getPosition (/home/trog/github.com/rconjoe/bigtonka/node_modules/typescript/lib/typescript.js:194721:66)\
+    at IpcIOSession.getSignatureHelpItems (/home/trog/github.com/rconjoe/bigtonka/node_modules/typescript/lib/typescript.js:195013:27)\
+    at signatureHelp (/home/trog/github.com/rconjoe/bigtonka/node_modules/typescript/lib/typescript.js:193204:43)\
+    at /home/trog/github.com/rconjoe/bigtonka/node_modules/typescript/lib/typescript.js:195676:15\
+    at IpcIOSession.executeWithRequestId (/home/trog/github.com/rconjoe/bigtonka/node_modules/typescript/lib/typescript.js:195665:14)\
+    at IpcIOSession.executeCommand (/home/trog/github.com/rconjoe/bigtonka/node_modules/typescript/lib/typescript.js:195674:29)\
+    at IpcIOSession.onMessage (/home/trog/github.com/rconjoe/bigtonka/node_modules/typescript/lib/typescript.js:195722:68)\
+    at process.&lt;anonymous&gt; (/home/trog/github.com/rconjoe/bigtonka/node_modules/typescript/lib/_tsserver.js:519:14)\
+    at process.emit (node:events:507:28)\
+    at emit (node:internal/child_process:949:14)\
+    at process.processTicksAndRejections (node:internal/process/task_queues:91:21)&quot;</code></pre>
+<p>So this at least points me towards seeing what unholy terror grepping
+the logs for <code>computePositionOfLineAndCharacter</code> will
+yield.</p>
+<p>Not much it seems, but the search results for stuff related to this
+are…barren.</p>
+<p>https://github.com/LazyVim/LazyVim/issues/3465 may be relevant.</p>
+<p>Apparently there is a way to suppress a given string pattern from
+coming thru on those notis in the vim console. Will have to check it
+out, or, nuke the setup and see what we find.</p>
+<p>Charming stuff. Will follow up in a future post.</p>
       </article>
     </main>
 
