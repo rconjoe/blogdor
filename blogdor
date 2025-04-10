@@ -180,8 +180,6 @@ create_archive() {
 title: "Blog Archive"
 ---
 
-# Blog Archive
-
 EOF
 
   # Create an array to hold all entries
