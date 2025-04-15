@@ -40,8 +40,8 @@ body {
   max-width: 800px;
   padding: 2rem;
   background-color: #111;
-  border: 2px solid #00ff00;
-  box-shadow: 8px 8px 0px #00ff00;
+  /* border: 2px solid #00ff00; */
+  /* box-shadow: 8px 8px 0px #00ff00; */
 }
 
 h1 {
