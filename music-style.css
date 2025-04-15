@@ -25,7 +25,6 @@ body {
 .intro h1 {
   font-size: 2rem;
   margin-bottom: 1rem;
-  text-transform: uppercase;
   letter-spacing: 0.1rem;
   text-align: center; /* Center the title in the intro */
 }
@@ -48,7 +47,6 @@ body {
 h1 {
   font-size: 2rem;
   margin-bottom: 1rem;
-  text-transform: uppercase;
   letter-spacing: 0.1rem;
 }
 
@@ -66,7 +64,6 @@ h1 {
 .track h2 {
   font-size: 1.2rem;
   margin-bottom: 0.5rem;
-  text-transform: uppercase;
   letter-spacing: 0.1rem;
 }
 
