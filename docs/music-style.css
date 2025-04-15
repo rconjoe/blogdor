@@ -1,0 +1,91 @@
+body {
+  font-family: monospace;
+  background-color: #000;
+  color: #00ff00;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column; /* Stack intro and container */
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.intro {
+  width: 80%;
+  max-width: 800px;
+  margin-bottom: 2rem;
+  margin-top: 2rem;
+  padding: 1rem;
+  border: 2px solid #00ff00;
+  background-color: #222;
+  box-shadow: 8px 8px 0px #00ff00;
+}
+
+.intro h1 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1rem;
+  text-align: center; /* Center the title in the intro */
+}
+
+.intro p {
+  font-size: 1rem;
+  line-height: 1.4;
+  color: #00bb00;
+}
+
+.container {
+  width: 80%;
+  max-width: 800px;
+  padding: 2rem;
+  background-color: #111;
+  border: 2px solid #00ff00;
+  box-shadow: 8px 8px 0px #00ff00;
+}
+
+h1 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1rem;
+}
+
+.track-list {
+  margin-top: 1rem;
+}
+
+.track {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  border: 2px solid #00ff00;
+  background-color: #222;
+}
+
+.track h2 {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1rem;
+}
+
+.track .description {
+  font-size: 0.9rem;
+  margin-bottom: 0.75rem;
+  color: #00bb00;
+}
+
+audio {
+  width: 100%;
+  filter: invert(1);
+}
+
+footer {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 2px solid #00ff00;
+  text-align: center;
+  font-size: 0.8rem;
+  color: #00bb00;
+}
