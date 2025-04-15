@@ -155,6 +155,12 @@ EOF
     echo "✅ Generated index page"
   fi
 
+  # Copy static files
+  cp music.html "$output_dir/"
+  cp music-style.css "$output_dir/"
+
+  echo "✅ Copied static files"
+
   # Create a list of all posts
   if [ "$include_drafts" = true ]; then
     # For preview mode, create an archive that shows draft status
