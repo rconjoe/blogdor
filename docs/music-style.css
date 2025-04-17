@@ -86,3 +86,19 @@ footer {
   font-size: 0.8rem;
   color: #00bb00;
 }
+
+a {
+  color: #800080; /* A shade of purple */
+  text-decoration: none; /* Removes underline */
+}
+/* Basic styling for the links */
+.song-link {
+  display: block;
+  margin-bottom: 5px;
+  color: #800080; /* A shade of purple */
+  text-decoration: none; /* Removes underline */
+}
+
+.song-link:hover {
+  text-decoration: underline; /* Add underline on hover for clarity */
+}
