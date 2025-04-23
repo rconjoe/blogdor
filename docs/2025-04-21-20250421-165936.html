@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Debugging GBC Builds</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/monokai-sublime.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script>
+      hljs.highlightAll();
+    </script>
+        <meta name="description" content="blogdor" />
+      </head>
+  <body>
+    <header>
+      <h1 class="site-title"><a href="index.html">trog.codes</a></h1>
+      <nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="archive.html">Archive</a></li>
+          <!-- <li><a href="about.html">About</a></li> -->
+          <li><a href="mailto:root@trog.codes">Contact</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article>
+        <h1 class="post-title">Debugging GBC Builds</h1>
+                <div class="post-date">Posted on: 2025-04-21
+16:59:36</div>
+         <p>I had a friend ask if I could help diff out the code of a
+modified Pokemon GBC game to figure out what they did. I was given the
+known source (a git repo) and a 7z containing the git repo of the mod
+source (and last built binaries).</p>
+<p>Upon extracting the mod source, I noticed that it was the same
+original git repo with all the changes just left untracked. This at
+least lets us see, albeit without any context, the changes that were
+made.</p>
+<p><img src="../images/pokediff.png" alt="diffing the changes" width=800 /></p>
+<p>I figured that to make sense of the changes, it would first make
+sense to get a build pipeline going so we can fiddle with the modded
+parts we don’t understand and see the effects. The build didn’t require
+anything weird (git, gcc, bison) except for <a
+href="https://rgbds.gbdev.io/">rgbds</a>, a GameBoy Color modding
+framework. It is <a href="https://rgbds.gbdev.io/docs/v0.9.1">well
+documented</a>.</p>
+<p>After an initail build, <code>make</code> spit out an error about an
+invalid <code>rgbds</code> flag, <code>-L</code>. Removing the flag in
+the makefile rendered uglier-looking compile errors.</p>
+<p>I noticed that the last commit to the existing code was made in
+mid-2021, so I matched up rgbds versions according to the latest at that
+time, built <code>rgbds</code> from source, then ran the Makefile
+against that version. Success!</p>
+<p>Next I will fiddle with the code and start to make sense of the
+assembly changes, so I can add some context missing from them
+currently.</p>
+      </article>
+    </main>
+
+    <footer>
+      <div class="visitor-counter">
+        “Programming is a Dark Art, and it always will be. The programmer is
+        fighting against the two most destructive forces in the universe:
+        entropy and human stupidity. These are not things you can overcome with
+        a “methodology” or on a schedule.” - Damian Conway
+      </div>
+      <div class="retro-elements">
+        <a href="index.html">Home</a> | <a href="archive.html">Archive</a> |
+        <!-- <a href="about.html">About</a> | -->
+        <a href="mailto:root@trog.codes">Contact</a> |
+        <a href="https://github.com/rconjoe/blogdor">Source</a>
+      </div>
+    </footer>
+  </body>
+</html>
