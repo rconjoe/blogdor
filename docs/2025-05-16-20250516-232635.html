@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Notes on Writing Tutorial Code</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/monokai-sublime.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script>
+      hljs.highlightAll();
+    </script>
+        <meta name="description" content="blogdor" />
+      </head>
+  <body>
+    <header>
+      <h1 class="site-title"><a href="index.html">trog.codes</a></h1>
+      <nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="archive.html">Archive</a></li>
+          <!-- <li><a href="about.html">About</a></li> -->
+          <li><a href="mailto:root@trog.codes">Contact</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article>
+        <h1 class="post-title">Notes on Writing Tutorial Code</h1>
+                <div class="post-date">Posted on: 2025-05-16
+23:26:35</div>
+         <div class="sourceCode" id="cb1"><pre
+class="sourceCode ts"><code class="sourceCode typescript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Add import of CheerioCrawler</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { RequestQueue<span class="op">,</span> CheerioCrawler } <span class="im">from</span> <span class="st">&quot;crawlee&quot;</span><span class="op">;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> requestQueue <span class="op">=</span> <span class="cf">await</span> RequestQueue<span class="op">.</span><span class="fu">open</span>()<span class="op">;</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> requestQueue<span class="op">.</span><span class="fu">addRequest</span>({ url<span class="op">:</span> <span class="st">&quot;https://crawlee.dev&quot;</span> })<span class="op">;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">// Create the crawler and add the queue with our URL</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">// and a request handler to process the page.</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> crawler <span class="op">=</span> <span class="kw">new</span> <span class="fu">CheerioCrawler</span>({</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  requestQueue<span class="op">,</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="co">// The `$` argument is the Cheerio object</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="co">// which contains parsed HTML of the website.</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="kw">async</span> <span class="fu">requestHandler</span>({ $<span class="op">,</span> request }) {</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Extract &lt;title&gt; text with Cheerio.</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="co">// See Cheerio documentation for API docs.</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> title <span class="op">=</span> <span class="fu">$</span>(<span class="st">&quot;title&quot;</span>)<span class="op">.</span><span class="fu">text</span>()<span class="op">;</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="vs">`The title of &quot;</span><span class="sc">${</span>request<span class="op">.</span><span class="at">url</span><span class="sc">}</span><span class="vs">&quot; is: </span><span class="sc">${</span>title<span class="sc">}</span><span class="vs">.`</span>)<span class="op">;</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="co">// Start the crawler and wait for it to finish</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> crawler<span class="op">.</span><span class="fu">run</span>()<span class="op">;</span></span></code></pre></div>
+<p>Good pedantic code is written with comments. Those comments should be
+written in a way to set the user up to intuitively write the correct
+code based on the tutorial/docs information they have just consumed. So
+for example, in the above snippet, I had just read about how to
+instantiate the <code>CheerioCrawler</code> class.</p>
+<p>It is extremely effective, at least for me, to be able to then skim
+the code snippet for that section, read the comments, and make an
+attempt at writing the correct code as described in the comments. I
+should be able to do this because the preceding paragraph would have
+contained specifically the correct information I need to deduce such
+code.</p>
+<p>As a pedagogy nerd I was oddly tickled by how well the docs are
+written for <a href="https://crawlee.dev">Crawlee</a>.</p>
+      </article>
+    </main>
+
+    <footer>
+      <div class="visitor-counter">
+        “Programming is a Dark Art, and it always will be. The programmer is
+        fighting against the two most destructive forces in the universe:
+        entropy and human stupidity. These are not things you can overcome with
+        a “methodology” or on a schedule.” - Damian Conway
+      </div>
+      <div class="retro-elements">
+        <a href="index.html">Home</a> | <a href="archive.html">Archive</a> |
+        <!-- <a href="about.html">About</a> | -->
+        <a href="mailto:root@trog.codes">Contact</a> |
+        <a href="https://github.com/rconjoe/blogdor">Source</a>
+      </div>
+    </footer>
+  </body>
+</html>
