@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BLE sniffing a Kelly DC controller</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/monokai-sublime.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script>
+      hljs.highlightAll();
+    </script>
+        <meta name="description" content="blogdor" />
+      </head>
+  <body>
+    <header>
+      <h1 class="site-title"><a href="index.html">trog.codes</a></h1>
+      <nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="archive.html">Archive</a></li>
+          <!-- <li><a href="about.html">About</a></li> -->
+          <li><a href="mailto:root@trog.codes">Contact</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article>
+        <h1 class="post-title">BLE sniffing a Kelly DC controller</h1>
+                <div class="post-date">Posted on: 2025-07-16
+08:17:54</div>
+         <p>I’ve been a personal electric vehicle (PEV) enthusaist for
+several years. In fact, I don’t own a car, but instead, several e-bikes
+and electric motorcycles. My daily driver is an Onyx RCR, a 72v, 8kw
+hub-driven electric “bike” that gets up to 70mph in under 5 seconds.</p>
+<p><img src="../images/rcr1.png" alt="Me on my RCR LTD" width=800 />
+<i>My RCR LTD, #47/100 of the individually numbered bikes from
+2024.</i></p>
+<p>These bikes use a Kelly Controllers KLS7230S, which in oversimplified
+terms, acts as a valve between the battery and the motor, controlling
+how much current is applied to the motor based on the throttle position.
+There are currently no truly good ways to configure these controllers -
+there are only a couple of difficult, clunky ways to do so. This is a
+common need for RCR owners as most will want to tweak settings like dead
+zones, max current limits, timing values, and many other characteristics
+about the bike’s drivetrain.</p>
+<p>Another common need is to monitor values from a BMS (Battery
+Management System), such as individual cell voltages or temperature
+sensors. This is more difficult to pin down, as there is a greater
+variety of BMS chips installed in aftermarket batteries, a common RCR
+modification. However, all of the stock batteries ship with the same
+BMS.</p>
+<p><img src="../images/rcrguts.jpg" alt="RCR guts" width=800 /> <i>The
+guts of one of my earlier RCR’s. The Kelly KLS7230S is visible mounted
+on the bottom of the battery tray. Dominating the top half of the frame
+is an (aftermarket) 60ah 72v battery pack, consisting of over 160 Li-ion
+21700 cells.</i></p>
+<p>I have offered my time to Onyx Motors to investigate the feasability
+of shipping a first-party mobile application for free with the bike, to
+manage both controller configuration and BMS monitoring.</p>
+<p>Some important things I want to remember today:</p>
+<ul>
+<li><a href="https://media.kellycontroller.com/new/Kelly-Cheetah-series-KLS-SUserManualV2.12-1.pdf">More
+recent KLS7230S manual</a></li>
+<li>Uses RS232 Serial protocol</li>
+<li>Controller comes with 4-pin JST adapter installed for RS232
+communication</li>
+<li>Controller comes with OPTIONAL CAN bus that is not set up but
+availabe on the harness</li>
+<li>Bikes come with installed 4-pin JST to BLE adapter</li>
+<li><a href="https://www.electricvelocitypnw.com/product/kelly-programming-cable">4-pin
+JST to USB cable</a> (for serial connection to PC)</li>
+</ul>
+<p>I have to use something like nRF Connect to sniff the services on the
+BLE adapter. It is translating the BLE messages into serial messages on
+the RS232 protocol. I think sniffing this is a lot easier than trying to
+log and reverse-engineer the serial protocol itself. I do have
+documentation on the CAN protocol, but this doesn’t help me at all for
+making a mobile app to configure the controller. If the bike already has
+working BLE communication to the controller, sniffing and finding
+patterns in the messages when inputting or reading configuration values
+is the next step.</p>
+      </article>
+    </main>
+
+    <footer>
+      <div class="visitor-counter">
+        “Programming is a Dark Art, and it always will be. The programmer is
+        fighting against the two most destructive forces in the universe:
+        entropy and human stupidity. These are not things you can overcome with
+        a “methodology” or on a schedule.” - Damian Conway
+      </div>
+      <div class="retro-elements">
+        <a href="index.html">Home</a> | <a href="archive.html">Archive</a> |
+        <!-- <a href="about.html">About</a> | -->
+        <a href="mailto:root@trog.codes">Contact</a> |
+        <a href="https://github.com/rconjoe/blogdor">Source</a>
+      </div>
+    </footer>
+  </body>
+</html>
