@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>BLE sniffing a Kelly DC controller</title>
+    <title>Onyx Kelly KLS7230S Superpost</title>
     <link rel="stylesheet" href="style.css" />
     <link
       rel="stylesheet"
@@ -30,7 +30,7 @@
 
     <main>
       <article>
-        <h1 class="post-title">BLE sniffing a Kelly DC controller</h1>
+        <h1 class="post-title">Onyx Kelly KLS7230S Superpost</h1>
                 <div class="post-date">Posted on: 2025-07-16
 08:17:54</div>
          <p>I’ve been a personal electric vehicle (PEV) enthusaist for
@@ -86,6 +86,19 @@ patterns in the messages when inputting or reading configuration values
 is the next step.</p>
 <p>If deciphering the BLE messages is too difficult, I plan to purchase
 the JST to USB cable and log those signals on a PC.</p>
+<p>UPDATE 07/16/25:</p>
+<p>What I did so far today was to take an Android device, put it in
+developer mode, and enable BT HCI logging while I use the AC Aduser app
+to execute commands on the Kelly controller. I then used
+<code>adb</code> to retrieve the logs and open them in Wireshark on my
+PC.</p>
+<p>They came in as a <code>.cfa</code> file, which I don’t know anything
+about, however Wireshark opened it just fine and exposed a bunch of
+Bluetooth RCOMM and SPP packets worth investigating.</p>
+<p>UPDATE 07/27/25:</p>
+<p>I have converted this initial post about BLE HCI snooping the AC
+Aduser app into a superpost that I will keep updating however long this
+goes on for.</p>
       </article>
     </main>
 
