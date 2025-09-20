@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Effect finally clicked</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/monokai-sublime.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script>
+      hljs.highlightAll();
+    </script>
+        <meta name="description" content="blogdor" />
+      </head>
+  <body>
+    <header>
+      <h1 class="site-title"><a href="index.html">trog.codes</a></h1>
+      <nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="archive.html">Archive</a></li>
+          <!-- <li><a href="about.html">About</a></li> -->
+          <li><a href="mailto:root@trog.codes">Contact</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article>
+        <h1 class="post-title">Effect finally clicked</h1>
+                <div class="post-date">Posted on: 2025-09-19
+21:04:13</div>
+         <p>For a couple of years now I have danced in and out of
+understanding <a href="https://effect.website">Effect-TS.</a> While
+working on larger codebases with remote teams, it was always in the
+backseat and just something I wanted to learn to pique my own curiosity
+in this idea they brought to Typescript, that of writing “blueprints”
+for your program by effectively hiding everything behind
+<a href="https://en.wikipedia.org/wiki/Thunk">thunks</a>. Effect then
+uses a fiber-based concurrency system to execute Effectful programs in
+what turns out to be quite a graceful manner.</p>
+<h2 id="how-i-finally-got-it">How I finally got it</h2>
+<p>One you realize everything is just thunkified, and what hiding every
+computation behind an anonymous function entails, it’s quite simple.</p>
+<p>A thunk type in TS is just:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode ts"><code class="sourceCode typescript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> Thunk<span class="op">&lt;</span>A<span class="op">&gt;</span> <span class="op">=</span> () <span class="kw">=&gt;</span> A<span class="op">;</span></span></code></pre></div>
+<p>So the simplest of examples looks like:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode ts"><code class="sourceCode typescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Instead of this</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> thing<span class="op">:</span> <span class="dt">number</span> <span class="op">=</span> <span class="dv">5</span><span class="op">;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">// wrap it in a thunk</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> thunked<span class="op">:</span> () <span class="kw">=&gt;</span> <span class="dt">number</span> <span class="op">=</span> () <span class="kw">=&gt;</span> <span class="dv">5</span><span class="op">;</span></span></code></pre></div>
+<p>A practical way to describe the difference between these two
+computations is as follows:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode ts"><code class="sourceCode typescript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">// This logs the same number 3 times</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> randomNumber<span class="op">:</span> <span class="dt">number</span> <span class="op">=</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">random</span>()<span class="op">;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(randomNumber)<span class="op">;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(randomNumber)<span class="op">;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(randomNumber)<span class="op">;</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co">// This logs 3 different numbers</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> randomNumberThunk<span class="op">:</span> () <span class="kw">=&gt;</span> <span class="dt">number</span> <span class="op">=</span> () <span class="kw">=&gt;</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">random</span>()<span class="op">;</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(randomNumberThunk)<span class="op">;</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(randomNumberThunk)<span class="op">;</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(randomNumberThunk)<span class="op">;</span></span></code></pre></div>
+<p>So, “trapping” the value of any given computation behind an anonymous
+function, is thereby delaying its execution until it’s explicitly called
+by a runtime.</p>
+<p>This is the core concept that enabled me to understand Effect after
+several tries.</p>
+<hr />
+<p>Over the next few days I will continue using this
+<a href="https://github.com/rconjoe/effect-workshop">awesome
+workshop</a>, specifically now the CLI and webserver sections, to
+practice translating programs into Effectful TS.</p>
+      </article>
+    </main>
+
+    <footer>
+      <div class="visitor-counter">
+        “Programming is a Dark Art, and it always will be. The programmer is
+        fighting against the two most destructive forces in the universe:
+        entropy and human stupidity. These are not things you can overcome with
+        a “methodology” or on a schedule.” - Damian Conway
+      </div>
+      <div class="retro-elements">
+        <a href="index.html">Home</a> | <a href="archive.html">Archive</a> |
+        <!-- <a href="about.html">About</a> | -->
+        <a href="mailto:root@trog.codes">Contact</a> |
+        <a href="https://github.com/rconjoe/blogdor">Source</a>
+      </div>
+    </footer>
+  </body>
+</html>
