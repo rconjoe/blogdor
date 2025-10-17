@@ -157,6 +157,7 @@ EOF
 
   # Copy static files
   cp music.html "$output_dir/"
+  cp tonka.html "$output_dir/"
   cp music-style.css "$output_dir/"
 
   echo "✅ Copied static files"
