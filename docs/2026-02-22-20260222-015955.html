@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RCR 80V Black Box (part 1)</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/monokai-sublime.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script>
+      hljs.highlightAll();
+    </script>
+        <meta name="description" content="blogdor" />
+      </head>
+  <body>
+    <header>
+      <h1 class="site-title"><a href="index.html">trog.codes</a></h1>
+      <nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="archive.html">Archive</a></li>
+          <!-- <li><a href="about.html">About</a></li> -->
+          <li><a href="mailto:root@trog.codes">Contact</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article>
+        <h1 class="post-title">RCR 80V Black Box (part 1)</h1>
+                <div class="post-date">Posted on: 2026-02-22
+01:59:55</div>
+         <p>I intend to detail in a later post my journey from
+enthusiastic <a href="https://onyxmotors.com">ONYX</a> rider to service
+director for the entire company. For today, I hope to resurrect this
+blog with some planning details for a black box I am building to help
+reverse-engineer useful diagnostic information from the bike.</p>
+<h1 id="preliminary">Preliminary</h1>
+<p>The 80v RCR is a bike I work on daily. The developer contracted with
+our company who makes the controller software is not willing to share an
+API or any documentation with me. So, I am preparing to sniff the
+existing “programming” leads with a logic analyzer to write my own
+scripts to dump whatever serial data I can find. From there I will begin
+the arduous process of decoding these bits into usable information.</p>
+<p><strong>The goal is a plug-and-play system that records unified
+diagnostics in real time.</strong></p>
+<h1 id="preparations">Preparations</h1>
+<p>I have purchased the following components for this project:</p>
+<ul>
+<li><a
+href="https://www.amazon.com/dp/B0F5QCK6X5?ref=ppx_yo2ov_dt_b_fed_asin_title">ESP32
+boards</a></li>
+<li><a
+href="https://www.amazon.com/dp/B07F7W91LC?ref=ppx_yo2ov_dt_b_fed_asin_title">5v
+to 3.3v logic converters</a></li>
+<li><a
+href="https://www.amazon.com/dp/B0FKGN3JMZ?ref=ppx_yo2ov_dt_b_fed_asin_title">24hz
+8 channel logic analyzer</a></li>
+<li><a
+href="https://www.amazon.com/dp/B0BV8ZQ81F?ref=ppx_yo2ov_dt_b_fed_asin_title">ESP32
+SD hats</a></li>
+<li><a
+href="https://www.amazon.com/dp/B0DNMMXS5D?ref=ppx_yo2ov_dt_b_fed_asin_title">ADUM3160
+usb isolator</a></li>
+<li><a
+href="https://www.amazon.com/dp/B0BVZBTP8V?ref=ppx_yo2ov_dt_b_fed_asin_title">breadboard
+supplies</a></li>
+<li><a
+href="https://www.amazon.com/dp/B0CSXZWGD6?ref=ppx_yo2ov_dt_b_fed_asin_title">ferrite
+rings</a></li>
+<li><a
+href="https://www.amazon.com/dp/B07GNVFL5D?ref=ppx_yo2ov_dt_b_fed_asin_title">back
+probing meter leads</a></li>
+</ul>
+<h1 id="concept">Concept</h1>
+<p>The original idea was to have the logic analyzer passively dump data
+to the ESP32 which would record the output to a microSD. These dump
+files would then be analyzed in <a
+href="https://sigrok.org/wiki/PulseView">PulseView</a>, a Qt-based GUI
+for <a href="https://sigrok.org/wiki/Main_Page">sigrok</a>. From here I
+would hope to find familiar serial data, looking for things like
+<code>0x55</code> start of frame, <code>0x3A</code> “:”,
+<code>0x7E</code> etc. These signals could be used for anything from
+peripheral/lighting controls to dump logging for diagnostics.</p>
+<h1 id="first-roadblock---protocol-identification">First Roadblock -
+Protocol Identification</h1>
+<p>
+<img src="../images/80v-data-harness-side.png" alt="Data harness - side" width=400 />
+</p>
+<p>
+<img src="../images/80v-data-harness-top.png" alt="Data harness - top" width=400 />
+</p>
+<p><i>Is this UART? LIN? CAN? Something custom? Only the most persistent
+asshole will find out.</i></p>
+<p>The line labeled “Programmer” has some interesting characteristics.
+Multiple signals to one pin indicates some kind of duplex UART or CAN
+bus-like topology. Thoughts:</p>
+<ul>
+<li>Measuring ohm resistance across the two pins to see if 60 or 120
+reads, indicating standard CAN network, which use two 120-ohm resistors
+in parallel.</li>
+<li>Measuring voltage between the two pins, and confirming 5v or
+3.3v</li>
+<li>Checking continuity between controller ground (heatsink) and harness
+pins</li>
+<li>Checking continuity between pins (maybe these just jump for
+activating BT?)</li>
+<li>Pulseview the data from a positive wire and look for square
+waves.</li>
+</ul>
+<p>I think I am looking either at GND/DATA or CAN-high and CAN-low.
+Tomorrow I will begin probing to find out. From there I will be
+sigrok-ing every signal that comes off those pins.</p>
+      </article>
+    </main>
+
+    <footer>
+      <div class="visitor-counter">
+        “Programming is a Dark Art, and it always will be. The programmer is
+        fighting against the two most destructive forces in the universe:
+        entropy and human stupidity. These are not things you can overcome with
+        a “methodology” or on a schedule.” - Damian Conway
+      </div>
+      <div class="retro-elements">
+        <a href="index.html">Home</a> | <a href="archive.html">Archive</a> |
+        <!-- <a href="about.html">About</a> | -->
+        <a href="mailto:root@trog.codes">Contact</a> |
+        <a href="https://github.com/rconjoe/blogdor">Source</a>
+      </div>
+    </footer>
+  </body>
+</html>
